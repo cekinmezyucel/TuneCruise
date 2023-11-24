@@ -25,10 +25,9 @@ struct ContentView: View {
                     Text(station.name)
                 }
             }
+            .background(Color.gray.opacity(0.1))
             
-            Spacer()
-            
-            // Playback controls (Previous, Play/Pause, Next)
+            // Playback controls
             HStack {
                 Button(action: playPrevious) {
                     Image(systemName: "backward.fill")
@@ -58,6 +57,7 @@ struct ContentView: View {
                 .disabled(selectedStationIndex == radioStations.count - 1)
             }
             .padding()
+            .background(Color.gray.opacity(0.1))
         }
         .padding()
     }
