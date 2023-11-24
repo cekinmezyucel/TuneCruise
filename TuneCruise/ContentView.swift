@@ -11,13 +11,14 @@ struct ContentView: View {
     
     @State private var player: AVPlayer?
     @State private var isPlaying = false
+    @State private var currentStationName = ""
     
     var body: some View {
         VStack {
             // Clickable list of radio stations
             List(radioStations, id: \.name) { station in
                 Button(action: {
-                    playStation(streamURL: station.streamURL)
+                    playStation(radioStation: station)
                     if let index = radioStations.firstIndex(where: { $0.name == station.name }) {
                         selectedStationIndex = index
                     }
@@ -26,6 +27,11 @@ struct ContentView: View {
                 }
             }
             .background(Color.gray.opacity(0.1))
+            
+            // Currently playing station name
+            Text(currentStationName)
+                .font(.headline)
+                .padding(.top, 16)
             
             // Playback controls
             HStack {
@@ -62,11 +68,11 @@ struct ContentView: View {
         .padding()
     }
     
-    func playStation(streamURL: String) {
+    func playStation(radioStation: RadioStation) {
         stopCurrentStation()
         
         // Create a URL object from the streaming URL
-        guard let url = URL(string: streamURL) else {
+        guard let url = URL(string: radioStation.streamURL) else {
             fatalError("Invalid URL")
         }
         
@@ -77,6 +83,9 @@ struct ContentView: View {
         player = AVPlayer(playerItem: playerItem)
         player?.play()
         isPlaying = true
+        
+        // Update currently playing station name
+        currentStationName = radioStation.name
     }
     
     func stopCurrentStation() {
@@ -100,7 +109,7 @@ struct ContentView: View {
         if selectedStationIndex < radioStations.count - 1 {
             selectedStationIndex += 1
             let nextStation = radioStations[selectedStationIndex]
-            playStation(streamURL: nextStation.streamURL)
+            playStation(radioStation: nextStation)
         }
     }
     
@@ -108,7 +117,7 @@ struct ContentView: View {
         if selectedStationIndex > 0 {
             selectedStationIndex -= 1
             let previousStation = radioStations[selectedStationIndex]
-            playStation(streamURL: previousStation.streamURL)
+            playStation(radioStation: previousStation)
         }
     }
 }
